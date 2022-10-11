@@ -20,4 +20,4 @@ class DataSet(object):
         tag_np = io.loadmat(path.join(self._data_path, f'data{i}.mat'))['tag']
         tag = torch.from_numpy(tag_np).long()
         normalize = transforms.Normalize((torch.mean(input),), (torch.std(input),))
-        return normalize(torch.stack([input], dim=0)), tag[1024-128:1024+128,1024-128:1024+128]
+        return normalize(torch.stack([input], dim=0)), tag[1024-84:1024+85,1024-84:1024+85]

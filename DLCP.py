@@ -6,7 +6,7 @@ from DLCPArchitecture import DLCPNet
 from DLCPDataLoader import DataSet
 import os
 
-#os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 PATH = 'DLCP.pth'
 
 torch.autograd.set_detect_anomaly(True)
@@ -43,7 +43,6 @@ for epoch in range(1, 1000000):  # loop over the dataset multiple times
 
         # forward + backward + optimize
         outputs = net(inputs)
-
 
         #background = tags.select(1, 0) == 0
         #background = torch.stack([background]), dim=1)

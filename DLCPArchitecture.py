@@ -4,7 +4,7 @@ import torch.nn as nn
 class DoubleConv(nn.Module):
     """(convolution => [BN] => ReLU) * 2"""
 
-    def __init__(self, in_channels, out_channels, mid_channels=None):
+    def __init__(self, in_channels, out_channels, mid_channels=None, stride=1):
         super().__init__()
         if not mid_channels:
             mid_channels = out_channels
@@ -12,7 +12,7 @@ class DoubleConv(nn.Module):
             nn.Conv2d(in_channels, mid_channels, kernel_size=3, padding=1),
             nn.BatchNorm2d(mid_channels),
             nn.ReLU(inplace=True),
-            nn.Conv2d(mid_channels, out_channels, kernel_size=3, padding=1),
+            nn.Conv2d(mid_channels, out_channels, kernel_size=3, padding=(1 if stride==1 else 0) , stride=stride),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True)
         )
@@ -24,11 +24,11 @@ class DoubleConv(nn.Module):
 class Down(nn.Module):
     """Downscaling with maxpool then double conv"""
 
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels, out_channels, stride=1):
         super().__init__()
         self.maxpool_conv = nn.Sequential(
-            nn.MaxPool2d(2),
-            DoubleConv(in_channels, out_channels)
+            #nn.MaxPool2d(2),
+            DoubleConv(in_channels, out_channels, stride=stride)
         )
 
     def forward(self, x):
@@ -51,9 +51,9 @@ class UAE(nn.Module):
         self.n_channels = n_channels
         self.n_classes = n_classes
 
-        self.inc = DoubleConv(n_channels, 64)
-        self.down1 = Down(64, 128)
-        self.down2 = Down(128, 256)
+        self.inc = DoubleConv(n_channels, 64, stride=3)
+        self.down1 = Down(64, 128, stride=2)
+        self.down2 = Down(128, 256, stride=2)
         self.down3 = Down(256, 512)
         self.outc1 = DoubleConv(512, 128, 256)
         self.outc2 = DoubleConv(128, 64)
@@ -67,6 +67,7 @@ class UAE(nn.Module):
         x = self.outc1(x4)
         x = self.outc2(x)
         logits = self.outc3(x)
+        #print(x.size())
         return logits
 
 
@@ -87,4 +88,4 @@ class DLCPNet(UAE):
 
     def forward(self, x):
         x = super(DLCPNet, self).forward(x)
-        return x
+        return x#self.tanh(x)
