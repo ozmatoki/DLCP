@@ -87,4 +87,4 @@ class DLCPNet(UAE):
 
     def forward(self, x):
         x = super(DLCPNet, self).forward(x)
-        return self.tanh(x)
+        return x
