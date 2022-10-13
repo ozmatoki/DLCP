@@ -80,7 +80,7 @@ class DLCPNet(UAE):
         '''
         Initilize the Class
         '''
-        n_channels = 1
+        n_channels = 3
         n_classes = 3
         super(DLCPNet, self).__init__(n_channels = n_channels, n_classes = n_classes)
         self.tanh = nn.Tanh()

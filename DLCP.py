@@ -21,7 +21,7 @@ testloader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffl
 
 net = DLCPNet()
 net = nn.DataParallel(net)
-#net.load_state_dict(torch.load(PATH))
+net.load_state_dict(torch.load(PATH))
 device = torch.device('cuda:0')
 net = net.to(device)
 criterion = nn.CrossEntropyLoss()#nn.SmoothL1Loss()  #SmoothL1Loss / MSELoss / L1Loss
@@ -64,7 +64,6 @@ for epoch in range(1, 1000000):  # loop over the dataset multiple times
     print(f'[{epoch}] loss: {training_loss[-1]:.3f}')
 
     if epoch % 10 == 0:
-        torch.save(net.state_dict(), './DLCP.pth')
         test_loss = 0
         with torch.no_grad():
             for i, data in enumerate(testloader):
@@ -82,4 +81,7 @@ for epoch in range(1, 1000000):  # loop over the dataset multiple times
         plt.plot(t1, training_loss[9:], label='train')
         plt.plot(t2, testing_loss, label='test')
         plt.legend()
-        plt.savefig('loss.png')
+        if len(testing_loss) >= 2 and testing_loss[-1] < testing_loss[-2]:
+            pass
+            #torch.save(net.state_dict(), './DLCP.pth')
+        #plt.savefig('loss.png')

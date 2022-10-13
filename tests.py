@@ -5,12 +5,12 @@ import torch
 import torch.nn as nn
 from scipy import io
 
-PATH = 'DLCP3.pth'
+PATH = 'DLCP.pth'
 
 torch.autograd.set_detect_anomaly(True)
 
 
-dataset = DataSet(r'/data/students/royoz/DLCP/data2-3')
+dataset = DataSet(r'/data/students/royoz/DLCP/data3')
 train_set, test_set = torch.utils.data.random_split(dataset, [18, 2])
 testloader = torch.utils.data.DataLoader(test_set, batch_size=1, shuffle=False, num_workers=0)
 

@@ -49,12 +49,17 @@ for i=1:100
     b=round(b);
     c=0.1*exp((1+1i)*b);
     FT=ifftshift(fft2(fftshift(c.*cond1+cond2+cond3)));
+    IFT=abs(FT).^2;
 
-    input=log10(abs(FT).^2);
+    input=log10(IFT);
     %output=(2*b-1).*cond1+cond2+cond3;
     tag=((b+1).*cond1+cond2+cond3);
 
-    save(['data/data' int2str(i-1) '.mat'],'input', 'tag');
+    Hrec=fftshift(ifft2(ifftshift(IFT)));
+    input2a = log10(abs(Hrec));
+    input2b = angle(Hrec);
+
+    save(['data2/data' int2str(i-1) '.mat'],'input', 'input2a', 'input2b', 'tag');
 end
 
 
