@@ -36,6 +36,8 @@ list=[list;[x0,y0,2*r]];
 % list=[list;[x0,y0,2*r]];
 cond3=zeros(N);
 
+cond9=(((X-N/2).^2+(Y-N/2).^2))>150.^2;
+
 %setting the support for the reconstruction
 support=cond1+cond2+cond3;
 
@@ -49,7 +51,7 @@ for i=1:100
     b=round(b);
     c=0.1*exp((1+1i)*b);
     FT=ifftshift(fft2(fftshift(c.*cond1+cond2+cond3)));
-    IFT=abs(FT).^2;
+    IFT=abs(FT).^2.*cond9;
 
     input=log10(IFT);
     %output=(2*b-1).*cond1+cond2+cond3;
@@ -59,7 +61,7 @@ for i=1:100
     input2a = log10(abs(Hrec));
     input2b = angle(Hrec);
 
-    save(['data2/data' int2str(i-1) '.mat'],'input', 'input2a', 'input2b', 'tag');
+    %save(['data3/data' int2str(i-1) '.mat'],'input', 'input2a', 'input2b', 'tag');
 end
 
 
