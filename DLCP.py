@@ -13,7 +13,7 @@ torch.autograd.set_detect_anomaly(True)
 
 batch_size = 4
 
-dataset = DataSet(r'/data/students/royoz/DLCP/data3')
+dataset = DataSet(r'/data/students/royoz/DLCP/data4')
 train_set, test_set = torch.utils.data.random_split(dataset, [18, 2])#[90, 10])
 
 trainloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True)#, num_workers=0)
@@ -21,7 +21,8 @@ testloader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffl
 
 net = DLCPNet()
 net = nn.DataParallel(net)
-net.load_state_dict(torch.load(PATH))
+#net.load_state_dict(torch.load(PATH))
+#net.load_state_dict(torch.load(DLCP3.pth))
 device = torch.device('cuda:0')
 net = net.to(device)
 criterion = nn.CrossEntropyLoss()#nn.SmoothL1Loss()  #SmoothL1Loss / MSELoss / L1Loss
@@ -58,6 +59,9 @@ for epoch in range(1, 1000000):  # loop over the dataset multiple times
         optimizer.step()
 
         train_loss += loss.item()
+        if epoch == 1 and i == 0:
+            print("Init loss:", train_loss)
+            training_loss.append(train_loss)
 
     # print statistics
     training_loss.append(train_loss / len(trainloader))
@@ -75,13 +79,12 @@ for epoch in range(1, 1000000):  # loop over the dataset multiple times
                 loss = criterion(outputs, tags)
                 test_loss += loss.item()
         testing_loss.append(test_loss / len(testloader))
-        t1 = range(10, epoch+1)
-        t2 = range(10, epoch+1, 10)
+        t1 = range(0, epoch+1)
+        t2 = range(0, epoch+1, 10)
         plt.figure()
-        plt.plot(t1, training_loss[9:], label='train')
-        plt.plot(t2, testing_loss, label='test')
+        plt.plot(t1, training_loss, label='train')
+        plt.plot(t2, training_loss[:1] + testing_loss, label='test')
         plt.legend()
         if len(testing_loss) >= 2 and testing_loss[-1] < testing_loss[-2]:
-            pass
-            #torch.save(net.state_dict(), './DLCP.pth')
-        #plt.savefig('loss.png')
+            torch.save(net.state_dict(), './DLCP.pth')
+        plt.savefig('loss.png')

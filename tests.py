@@ -10,8 +10,8 @@ PATH = 'DLCP.pth'
 torch.autograd.set_detect_anomaly(True)
 
 
-dataset = DataSet(r'/data/students/royoz/DLCP/data3')
-train_set, test_set = torch.utils.data.random_split(dataset, [18, 2])
+dataset = DataSet(r'/data/students/royoz/DLCP/data4')
+train_set, test_set = torch.utils.data.random_split(dataset, [18, 4])
 testloader = torch.utils.data.DataLoader(test_set, batch_size=1, shuffle=False, num_workers=0)
 
 net = DLCPNet()
